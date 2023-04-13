@@ -1,8 +1,10 @@
 
 import fs from 'fs';
 import Ddddocr from 'ddddocr';
+import path from 'path'
 
-
+const a = path.join(__dirname, './models/v1/tixcraftv3_0.6666666666666666_14100_423000_2023-04-13-09-40-09.onnx')
+const b = path.join(__dirname, './models/v1/charsets.json')
 
 
 export const useDdddocr = async (
@@ -16,14 +18,17 @@ export const useDdddocr = async (
     const t1 = Date.now();
 
     const init = Ddddocr.create({
-      onnxPath: './models/tixcraftv3_0.6666666666666666_14100_423000_2023-04-13-09-40-09.onnx',
-      charsetsPath: './models/charsets.json',
+      // onnxPath: a,
+      // charsetsPath: b,
     });
 
     const ddddocr = await init;
     const captcha = fs.readFileSync(path, {
       encoding: 'base64',
     });
+
+    console.log(captcha)
+
     const result = await ddddocr.classification(Buffer.from(captcha, 'base64'));
 
     const t2 = Date.now();

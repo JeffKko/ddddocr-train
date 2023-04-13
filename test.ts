@@ -1,9 +1,12 @@
 
 import fs from 'fs';
 import Ddddocr from 'ddddocr';
+import path from 'path'
+import axios from 'axios';
 
 
-
+const a = path.join(__dirname, './models/v1/tixcraftv3_0.6666666666666666_14100_423000_2023-04-13-09-40-09.onnx')
+const b = path.join(__dirname, './models/v1/charsets.json')
 
 export const useDdddocr = async (
   path: string,
@@ -16,8 +19,8 @@ export const useDdddocr = async (
     const t1 = Date.now();
 
     const init = Ddddocr.create({
-      onnxPath: './models/tixcraftv3_0.6666666666666666_14100_423000_2023-04-13-09-40-09.onnx',
-      charsetsPath: './models/charsets.json',
+      // onnxPath: a,
+      // charsetsPath: b,
     });
 
     const ddddocr = await init;
@@ -42,13 +45,32 @@ export const useDdddocr = async (
 // });
 
 
-const testFolder = './images/';
+
+
+const cloudOcr = async (base64: string) => {
+  const res = await axios.post('https://ocr-a5xzo2fkma-de.a.run.app', {
+    image : base64,
+  })
+  return res
+}
+
+(async () => {
+  const init = Ddddocr.create({
+    // onnxPath: a,
+    // charsetsPath: b,
+  });
+
+  const ddddocr = await init;
+
+  const testFolder = './images/';
 
 let rightCount = 0
 let wrongCount = 0
 let totalCount = 0
 
 let wrongList: string[] = []
+
+const t1 = Date.now()
 
 fs.readdir(testFolder, async(err, filesList) => {
 
@@ -66,7 +88,12 @@ fs.readdir(testFolder, async(err, filesList) => {
 
     console.log(`${totalCount} ${currentFile}`)
 
-    const guessAns = await useDdddocr(`./images/${file}`)
+    const captcha = fs.readFileSync(`./images/${file}`, {
+      encoding: 'base64',
+    });
+    const guessAns = await ddddocr.classification(Buffer.from(captcha, 'base64'));
+
+    // const {data: guessAns} = await cloudOcr(captcha)
 
     if (ans === guessAns) {
       rightCount += 1
@@ -75,27 +102,19 @@ fs.readdir(testFolder, async(err, filesList) => {
 
       wrongList.push(`${guessAns} ${file}`)
     }
+
+    // if (totalCount === 100) break;
   }
-
-  // files.forEach(async file => {
-
-  //   console.log(file);
-
-  //   const ans = file.split('_')[0]
-
-  //   const guessAns = await useDdddocr(`./images/${file}`)
-
-  //   if (ans === guessAns) {
-  //     rightCount += 1
-  //   } else {
-  //     wrongCount += 1
-
-  //     wrongList.push(`${guessAns} ${file}`)
-  //   }
-  // });
 
   console.log('rightCount: ', rightCount)
   console.log('wrongCount: ', wrongCount)
 
   fs.writeFileSync(`result_${Date.now()}.txt`, wrongList.join('\n'))
+
+  const t2 = Date.now()
+
+  console.log('總花費:' + (t2 - t1) + 'ms')
 });
+
+
+})()
