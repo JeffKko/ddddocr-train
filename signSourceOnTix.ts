@@ -6,7 +6,6 @@ let count = 0
 
 main()
 
-
 async function main() {
   const tixSourceFolder = './images_tix/';
 

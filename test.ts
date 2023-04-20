@@ -103,7 +103,7 @@ fs.readdir(testFolder, async(err, filesList) => {
       wrongList.push(`${guessAns} ${file}`)
     }
 
-    // if (totalCount === 100) break;
+    if (totalCount === 200) break;
   }
 
   console.log('rightCount: ', rightCount)
