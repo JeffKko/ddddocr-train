@@ -129,5 +129,28 @@ def new_save():
 
     return 'ok'
 
+@app.route('/api/uncheck-save', methods=['POST'])
+def new_uncheck_save():
+
+    data = request.get_json()
+    imageBase64 = data['imageBase64']
+    code = data['code']
+
+    # 將 base64 字串轉換成 bytes
+    img_data = base64.b64decode(imageBase64)
+
+    # 取得 Unix timestamp（秒數）
+    now = time.time()
+
+    time_stamp = now * 1000
+
+    file_name = f'{code}_{time_stamp}.jpg'
+
+    # 將 bytes 寫入檔案
+    with open(f'./uncheck-image/{file_name}', 'wb') as f:
+        f.write(img_data)
+
+    return 'ok'
+
 if __name__ == '__main__':
     app.run(debug=True)

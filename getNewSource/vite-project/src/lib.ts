@@ -65,3 +65,67 @@ export const sendCaptchaAnswer = async (imageBase64: string, code: string) => {
 
   return data.message
 }
+
+interface Result {
+  "errorId": number,
+  "status": 'processing' | 'ready',
+  "solution":
+      {
+          "text":string,
+          "url":string
+      },
+  "cost":string,
+  "ip":string,
+  "createTime":number,
+  "endTime":number,
+  "solveCount":string
+}
+
+const sleep = (time: number) => new Promise(r => setTimeout(r, time))
+
+export const getResult = async (taskId: number): Promise<Result> => {
+  const payload = {
+    clientKey: 'aeb8ff6eea25c5542fab1d5ef1ea7f69',
+    taskId,
+  }
+
+  const {data} = await axios.post<Result>('https://api.anti-captcha.com/getTaskResult', payload)
+
+   console.log('data: ', data)
+
+   if (data.status === 'processing') {
+      await sleep(2000)
+
+      const data = await getResult(taskId)
+
+      return data
+   }
+
+   return data
+}
+
+export const createTask = async (imageBase64: string) => {
+  const payload = {
+    clientKey: 'aeb8ff6eea25c5542fab1d5ef1ea7f69',
+    task: {
+      "type":"ImageToTextTask",
+      "body": imageBase64,
+      "phrase":false,
+      "case":false,
+      "numeric":2,
+      "math":false,
+      "minLength":4,
+      "maxLength":4
+    },
+    softId: 0,
+  }
+
+  const {data} = await axios.post<{
+    "errorId": number,
+    "taskId": number
+   }>('https://api.anti-captcha.com/createTask', payload)
+
+  console.log('data: ', data)
+
+  return data
+}

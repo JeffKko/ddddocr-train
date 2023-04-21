@@ -4,11 +4,13 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import axios from 'axios'
 import {getRefreshCaptchaFromPython, sendCaptchaAnswer} from './lib'
+import AntiCaptcha from './components/AntiCaptcha'
 
 function App() {
   const [count, setCount] = useState(0)
   const [imageBase64, setImageBase64] = useState('')
   const [code, setCode] = useState('')
+  const [isAntiCaptcha, setIsAntiCaptcha] = useState(false)
   const inputRef = useRef<any>()
 
   const handleGetNewCaptcha = async() => {
@@ -61,33 +63,42 @@ function App() {
   }, [sendAnswer])
 
   return (
-    <div className="App">
-      <div>
-        {/* <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a> */}
-        <img src={`data:image/png;base64,${imageBase64}`} width="256" height="auto" alt=""/>
-      </div>
-      {/* <h1>Vite + React</h1> */}
-      <div className="card">
-        {/* <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button> */}
-        <button onClick={handleClick}>
-          get captcha
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+    <>
+    {
+      isAntiCaptcha
+      ? <AntiCaptcha />
+      : <div className="App">
+          <button onClick={() => setIsAntiCaptcha(true)}>
+            Go AntiCaptcha
+          </button>
+        <div>
+          {/* <a href="https://vitejs.dev" target="_blank">
+            <img src={viteLogo} className="logo" alt="Vite logo" />
+          </a>
+          <a href="https://reactjs.org" target="_blank">
+            <img src={reactLogo} className="logo react" alt="React logo" />
+          </a> */}
+          <img src={`data:image/png;base64,${imageBase64}`} width="256" height="auto" alt=""/>
+        </div>
+        {/* <h1>Vite + React</h1> */}
+        <div className="card">
+          {/* <button onClick={() => setCount((count) => count + 1)}>
+            count is {count}
+          </button> */}
+          <button onClick={handleClick}>
+            get captcha
+          </button>
+          <p>
+            Edit <code>src/App.tsx</code> and save to test HMR
+          </p>
+          <input ref={inputRef} type="text" style={{fontSize: '60px', width: '200px'}} value={code} onChange={(e: any) => handleChange(e.target.value)}/>
+        </div>
+        <p className="read-the-docs">
+          Click on the Vite and React logos to learn more
         </p>
-        <input ref={inputRef} type="text" style={{fontSize: '60px', width: '200px'}} value={code} onChange={(e: any) => handleChange(e.target.value)}/>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    }
+    </>
   )
 }
 
