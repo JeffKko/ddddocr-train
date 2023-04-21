@@ -52,3 +52,16 @@ export const getRefreshCaptchaFromPython = async () => {
 
   return data.base64
 }
+
+export const sendCaptchaAnswer = async (imageBase64: string, code: string) => {
+
+  const payload = {
+    imageBase64,
+    code,
+  }
+  const {data} = await axios.post<{
+    message: string
+  }>(`http://127.0.0.1:5000/api/save`, payload)
+
+  return data.message
+}
