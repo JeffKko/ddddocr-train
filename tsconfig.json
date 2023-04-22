@@ -13,8 +13,8 @@
     "skipLibCheck": true, // 跳過對所有聲明文件 (*.d.ts) 的類型檢查
     "noImplicitThis": false,
     "outDir": "./dist", // 指定編譯後的檔案存放點
-    "rootDir": "./getNewSource", // 載入點的位置
-    "baseUrl": "./getNewSource" // 指定匯入檔案的基準路徑
+    "rootDir": ".", // 載入點的位置
+    "baseUrl": "." // 指定匯入檔案的基準路徑
   },
-  "exclude": ["./dist", "*.d.ts", "./legacy", "./vite-project", "./server"] //不納入編譯範
+  "exclude": ["./dist", "*.d.ts", "./legacy"] //不納入編譯範
 }

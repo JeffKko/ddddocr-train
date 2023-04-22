@@ -43,12 +43,16 @@ export const getCapchaBase64ByRefresh = async () => {
   return data.url
 }
 
-export const getRefreshCaptchaFromPython = async () => {
+export const getRefreshCaptchaFromPython = async (user: number = 1) => {
+  const endPoint = user === 1
+  ? `http://127.0.0.1:5000/api/refresh`
+  : `http://127.0.0.1:5000/api/refresh/2`
+
   const {data} = await axios.get<{
     // hash1: number,
     // hash2: number,
     base64: string
-  }>(`http://127.0.0.1:5000/api/refresh`)
+  }>(endPoint)
 
   return data.base64
 }
