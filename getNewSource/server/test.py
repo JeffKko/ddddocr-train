@@ -1,4 +1,5 @@
 import glob
+import base64
 
 image_list = []
 
@@ -15,3 +16,4 @@ filename = pathname.split('/')[2]
 
 
 print(filename)
+
